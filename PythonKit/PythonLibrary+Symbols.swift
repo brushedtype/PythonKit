@@ -47,8 +47,7 @@ let Py_IncRef: @convention(c) (PyObjectPointer?) -> Void =
 let Py_DecRef: @convention(c) (PyObjectPointer?) -> Void =
     PythonLibrary.loadSymbol(name: "Py_DecRef")
 
-let PyImport_ImportModule: @convention(c) (
-    PyCCharPointer) -> PyObjectPointer? =
+let PyImport_ImportModule: @convention(c) (PyCCharPointer) -> PyObjectPointer? =
     PythonLibrary.loadSymbol(name: "PyImport_ImportModule")
 
 let PyEval_GetBuiltins: @convention(c) () -> PyObjectPointer =
@@ -56,6 +55,18 @@ let PyEval_GetBuiltins: @convention(c) () -> PyObjectPointer =
 
 let PyRun_SimpleString: @convention(c) (PyCCharPointer) -> Void =
     PythonLibrary.loadSymbol(name: "PyRun_SimpleString")
+
+let PyGILState_Ensure: @convention(c) () -> PyObjectPointer =
+    PythonLibrary.loadSymbol(name: "PyGILState_Ensure")
+
+let PyGILState_Release: @convention(c) (PyObjectPointer) -> Void =
+    PythonLibrary.loadSymbol(name: "PyGILState_Release")
+
+let PyEval_SaveThread: @convention(c) () -> PyObjectPointer =
+    PythonLibrary.loadSymbol(name: "PyEval_SaveThread")
+
+let PyEval_RestoreThread: @convention(c) (PyObjectPointer) -> Void =
+    PythonLibrary.loadSymbol(name: "PyEval_RestoreThread")
 
 let PyCFunction_NewEx: @convention(c) (PyMethodDefPointer, UnsafeMutableRawPointer, UnsafeMutableRawPointer?) -> PyObjectPointer =
     PythonLibrary.loadSymbol(name: "PyCFunction_NewEx")

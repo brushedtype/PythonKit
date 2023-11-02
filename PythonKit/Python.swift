@@ -415,6 +415,10 @@ public struct ThrowingPythonObject {
     }
 }
 
+/// Opaque Python thread state pointer
+public struct PythonThreadState {
+    let ptr: PyObjectPointer
+}
 
 //===----------------------------------------------------------------------===//
 // `PythonObject` member access implementation
@@ -721,7 +725,23 @@ public struct PythonInterface {
     public var versionInfo: PythonObject {
         return self.import("sys").version_info
     }
-    
+
+    public func saveThread() -> PythonThreadState {
+        return PythonThreadState(ptr: PyEval_SaveThread())
+    }
+
+    public func restoreThread(_ t: PythonThreadState) {
+        PyEval_RestoreThread(t.ptr)
+    }
+
+    public func performWithGIL<T>(_ block: () -> T) -> T {
+        let state = PyGILState_Ensure()
+        defer {
+            PyGILState_Release(state)
+        }
+        return block()
+    }
+
     /// Emulates a Python `with` statement.
     /// - Parameter object: A context manager object.
     /// - Parameter body: A closure to call on the result of `object.__enter__()`.
